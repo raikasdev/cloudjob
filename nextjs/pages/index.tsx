@@ -24,40 +24,19 @@ const Home: NextPage = ({ jobs }) => {
                     <a className="nav-link active" aria-current="page">Positions</a>
                   </Link>
                 </li>
-              <li className="nav-item"><a href="/admin" className="nav-link">Admin</a></li>
+              <li className="nav-item">
+                <Link href="/admin">
+                  <a className="nav-link">Admin</a>
+                </Link>
+              </li>
             </ul>
           </header>
-          <div className="accordion" id="accordionExample">
-            {jobs ? 
-              jobs.map((job, i: number) => (
-                <div className="accordion-item" key={i}>
-                  <h2 className="accordion-header" id={`heading${i}`}>
-                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                      {job.name}
-                    </button>
-                  </h2>
-                  <div id={`collapse${i}`} className="accordion-collapse collapse show" aria-labelledby={`heading${i}`} data-bs-parent="#accordionExample">
-                    {job.applications.map((application: {name:string;experience:string;education:string;application:string;}, i: number) => (
-                      <div className="application" key={i}>
-                        <h3>{application.name}</h3>
-                        <h4>Experience</h4>
-                        <ReactMarkdown>{application.experience}</ReactMarkdown>
-                        <h4>Education</h4>
-                        <ReactMarkdown>{application.education}</ReactMarkdown>
-                        <h4>Application</h4>
-                        <ReactMarkdown>{application.application}</ReactMarkdown>
-                        <hr />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )) 
-            : 'Loading'}
-          </div>
+          <h1>Available positions</h1>
           <ul className="list-group">
-            
+            {jobs ? 
+              jobs.map((job, i: number) => <li key={i} className="list-group-item"><a href={`/position/${job.id}`}>{job.name}</a></li>) 
+            : 'Loading'}
           </ul>
-          
         </div>
       </main>
     </div>
@@ -70,7 +49,7 @@ export async function getServerSideProps(): Promise<Record<string, unknown>> {
   
   return {
     props: { jobs: await Promise.all(post.map(async (id: string) => {
-      return { id, ...(await (await fetch(`${config.baseUrl}/api/positions/${id}`)).json()), applications: (await (await fetch(`${config.baseUrl}/api/positions/${id}/applications`)).json()) }; 
+      return { id, ...(await (await fetch(`${config.baseUrl}/api/positions/${id}`)).json()) }; 
     }))}, // will be passed to the page component as props
   }
 }

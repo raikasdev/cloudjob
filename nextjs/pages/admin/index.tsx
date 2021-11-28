@@ -1,8 +1,10 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Link from 'next/link';
-import config from '../../config';
-import styles from '../../styles/Admin.module.css'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import { useEffect } from "react";
+import { Accordion } from "react-bootstrap";
+import config from "../../config";
+import styles from "../../styles/Admin.module.css";
 
 const Home: NextPage = ({ jobs }) => {
   return (
@@ -19,34 +21,94 @@ const Home: NextPage = ({ jobs }) => {
           <header className="d-flex justify-content-center py-3">
             <ul className="nav nav-pills">
               <li className="nav-item">
-                  <Link href="/">
-                    <a className="nav-link">Positions</a>
-                  </Link>
-                </li>
-              <li className="nav-item"><a href="/admin" className="nav-link active" aria-current="page">Admin</a></li>
+                <Link href="/">
+                  <a className="nav-link">Positions</a>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/admin">
+                  <a className="nav-link active" aria-current="page">
+                    Admin
+                  </a>
+                </Link>
+              </li>
             </ul>
           </header>
-          <ul className="list-group">
-            {jobs ? 
-              jobs.map((job, i: number) => <li key={i} className="list-group-item"><a href={`/position/${job.id}`}>{job.name}</a></li>) 
-            : 'Loading'}
-          </ul>
-          
+          <Accordion>
+            {jobs
+              ? jobs.map((job, i: number) => (
+                  <Accordion.Item eventKey={i} key={i}>
+                    <Accordion.Header>{job.name}</Accordion.Header>
+                    <Accordion.Body>
+                      {job.applications.map(
+                        (
+                          application: {
+                            name: string,
+                            experience: string,
+                            education: string,
+                            application: string,
+                          },
+                          i: number
+                        ) => (
+                          <div className="application" key={i}>
+                            <h3>{application.name}</h3>
+                            <h4>Experience</h4>
+                            {application.experience
+                              .split("\n")
+                              .map((t: string, i: number) => {
+                                return <p key={i}>{t}</p>;
+                              })}
+
+                            <h4>Education</h4>
+                            {application.education
+                              .split("\n")
+                              .map((t: string, i: number) => {
+                                return <p key={i}>{t}</p>;
+                              })}
+                            <h4>Application</h4>
+                            {application.application
+                              .split("\n")
+                              .map((t: string, i: number) => {
+                                return <p key={i}>{t}</p>;
+                              })}
+                            <hr />
+                          </div>
+                        )
+                      )}
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))
+              : "Loading"}
+          </Accordion>
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
 export async function getServerSideProps(): Promise<Record<string, unknown>> {
-  const res = await fetch(`${config.baseUrl}/api/positions/`)
+  const res = await fetch(`${config.baseUrl}/api/positions/`);
   const post = await res.json();
-  
+
   return {
-    props: { jobs: await Promise.all(post.map(async (id: string) => {
-      return { id, ...(await (await fetch(`${config.baseUrl}/api/positions/${id}`, { body: JSON.stringify({admin_key: "AdminKey"})})).json()) }; 
-    }))}, // will be passed to the page component as props
-  }
+    props: {
+      jobs: await Promise.all(
+        post.map(async (id: string) => {
+          return {
+            id,
+            ...(await (
+              await fetch(`${config.baseUrl}/api/positions/${id}`)
+            ).json()),
+            applications: await (
+              await fetch(
+                `${config.baseUrl}/api/positions/${id}/applications?admin_key=AdminKey`
+              )
+            ).json(),
+          };
+        })
+      ),
+    }, // will be passed to the page component as props
+  };
 }
 
-export default Home
+export default Home;
