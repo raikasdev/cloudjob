@@ -1,11 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
 import config from '../config';
 import styles from '../styles/Home.module.css'
 
-const Home: NextPage = ({ jobs }) => {
+const Home: NextPage = ({ jobs }: any) => {
   return (
     <div className={styles.container}>
       <Head>
