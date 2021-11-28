@@ -76,7 +76,7 @@ export async function getStaticPaths(): Promise<Record<string, unknown>> {
     paths: data.map((id: string) => {
       return { params: { id } };
     }),
-    fallback: true,
+    fallback: false,
   };
 }
 
