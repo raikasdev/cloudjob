@@ -29,14 +29,13 @@ export async function PositionApply(request: Request): Promise<Response> {
 }
 
 export async function Application(request: Request): Promise<Response> {
-    if (!request.json) {
-        return new Response(JSON.stringify({ error: "Body missing" }), { headers, status: 400 }) 
+    if (!request.query) {
+        return new Response(JSON.stringify({ error: "Query missing" }), { headers, status: 400 }) 
     }
-    const data = await request.json();
-    if (!data.admin_key) {
+    if (!request.query.admin_key) {
         return new Response(JSON.stringify({ error: "Admin key missing" }), { headers, status: 400 }) 
     }
-    if (data.admin_key !== admin_key) {
+    if (request.query.admin_key !== admin_key) {
         return new Response(JSON.stringify({ error: "Admin key invalid" }), { headers, status: 400 }) 
     }
     if (!(request.params && request.params.id)) {

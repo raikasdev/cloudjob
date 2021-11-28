@@ -16,15 +16,17 @@ const PositionIndex: NextPage = () => {
     const run = async () => {
       try {
         const res = await fetch(`${config.baseUrl}/api/positions/${id}`);
-        console.log(res)
         const json = await res.json();
+        if (json.error) {
+          window.location.href = '/';
+        }
         setData(json);
       } catch (e) {
         window.location.href = '/';
       }
     }
     run();
-  }, []);
+  }, [id]);
   return (
     <div className={styles.container}>
       <Head>
@@ -52,6 +54,26 @@ const PositionIndex: NextPage = () => {
       </main>
     </div>
   )
+}
+
+export async function getStaticProps({ params }): Promise<Record<string, unknown>> {
+  // params contains the post `id`.
+  const res = await fetch(`${config.baseUrl}/api/positions/${params.id}`)
+  const post = await res.json()
+
+  // Pass post data to the page via props
+  return { props: { post } }
+}
+
+export async function getStaticPaths(): Promise<Record<string, unknown>> {
+  const res = await fetch(`${config.baseUrl}/api/positions`)
+  const data = await res.json()
+  return {
+    paths: data.map((id: string) => {
+      return { params: { id } };
+    }),
+    fallback: true,
+  };
 }
 
 export default PositionIndex;

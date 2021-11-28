@@ -7,7 +7,7 @@ router
   .get('/api/positions', Position)
   .get('/api/positions/:id', Position)
   .post('/api/positions/:id', PositionApply)
-  .get('/api/positions/:id/applications', Application)
+  .get('/api/positions/:id/applications', Application) // admin
   .patch('/api/positions/:id', PositionEdit)
   .put('/api/positions/', PositionCreate)
   .delete('/api/positions/:id', PositionDelete)
