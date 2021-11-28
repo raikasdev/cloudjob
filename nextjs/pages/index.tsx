@@ -1,8 +1,8 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Link from 'next/link';
-import config from '../config';
-import styles from '../styles/Home.module.css'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import config from "../config";
+import styles from "../styles/Home.module.css";
 
 const Home: NextPage = ({ jobs }: any) => {
   return (
@@ -19,10 +19,12 @@ const Home: NextPage = ({ jobs }: any) => {
           <header className="d-flex justify-content-center py-3">
             <ul className="nav nav-pills">
               <li className="nav-item">
-                  <Link href="/">
-                    <a className="nav-link active" aria-current="page">Positions</a>
-                  </Link>
-                </li>
+                <Link href="/">
+                  <a className="nav-link active" aria-current="page">
+                    Positions
+                  </a>
+                </Link>
+              </li>
               <li className="nav-item">
                 <Link href="/admin">
                   <a className="nav-link">Admin</a>
@@ -32,25 +34,38 @@ const Home: NextPage = ({ jobs }: any) => {
           </header>
           <h1>Available positions</h1>
           <ul className="list-group">
-            {jobs ? 
-              jobs.map((job, i: number) => <li key={i} className="list-group-item"><a href={`/position/${job.id}`}>{job.name}</a></li>) 
-            : 'Loading'}
+            {jobs
+              ? jobs.map((job: { id: string, name: string }, i: number) => (
+                  <li key={i} className="list-group-item">
+                    <a href={`/position/${job.id}`}>{job.name}</a>
+                  </li>
+                ))
+              : "Loading"}
           </ul>
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
 export async function getServerSideProps(): Promise<Record<string, unknown>> {
-  const res = await fetch(`${config.baseUrl}/api/positions/`)
+  const res = await fetch(`${config.baseUrl}/api/positions/`);
   const post = await res.json();
-  
+
   return {
-    props: { jobs: await Promise.all(post.map(async (id: string) => {
-      return { id, ...(await (await fetch(`${config.baseUrl}/api/positions/${id}`)).json()) }; 
-    }))}, // will be passed to the page component as props
-  }
+    props: {
+      jobs: await Promise.all(
+        post.map(async (id: string) => {
+          return {
+            id,
+            ...(await (
+              await fetch(`${config.baseUrl}/api/positions/${id}`)
+            ).json()),
+          };
+        })
+      ),
+    }, // will be passed to the page component as props
+  };
 }
 
-export default Home
+export default Home;

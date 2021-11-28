@@ -45,7 +45,11 @@ const PositionIndex: NextPage = () => {
                     <a className="nav-link active" aria-current="page">Positions</a>
                   </Link>
                 </li>
-              <li className="nav-item"><a href="/admin" className="nav-link">Admin</a></li>
+              <li className="nav-item">
+                <Link href="/admin">
+                  <a className="nav-link">Admin</a>
+                </Link>
+              </li>
             </ul>
           </header>
           <h1>{(data as {name: string;}).name}</h1>
@@ -56,7 +60,7 @@ const PositionIndex: NextPage = () => {
   )
 }
 
-export async function getStaticProps({ params }): Promise<Record<string, unknown>> {
+export async function getStaticProps({ params }: {params: {id:string;}}): Promise<Record<string, unknown>> {
   // params contains the post `id`.
   const res = await fetch(`${config.baseUrl}/api/positions/${params.id}`)
   const post = await res.json()

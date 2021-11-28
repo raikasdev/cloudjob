@@ -1,12 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect } from "react";
 import { Accordion } from "react-bootstrap";
 import config from "../../config";
 import styles from "../../styles/Admin.module.css";
 
-const Home: NextPage = ({ jobs }) => {
+const Home: NextPage = ({ jobs }: any) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -36,48 +35,61 @@ const Home: NextPage = ({ jobs }) => {
           </header>
           <Accordion>
             {jobs
-              ? jobs.map((job, i: number) => (
-                  <Accordion.Item eventKey={i} key={i}>
-                    <Accordion.Header>{job.name}</Accordion.Header>
-                    <Accordion.Body>
-                      {job.applications.map(
-                        (
-                          application: {
-                            name: string,
-                            experience: string,
-                            education: string,
-                            application: string,
-                          },
-                          i: number
-                        ) => (
-                          <div className="application" key={i}>
-                            <h3>{application.name}</h3>
-                            <h4>Experience</h4>
-                            {application.experience
-                              .split("\n")
-                              .map((t: string, i: number) => {
-                                return <p key={i}>{t}</p>;
-                              })}
+              ? jobs.map(
+                  (
+                    job: {
+                      name: string,
+                      applications: {
+                        experience: string,
+                        name: string,
+                        education: string,
+                        application: string,
+                      }[],
+                    },
+                    i: number
+                  ) => (
+                    <Accordion.Item eventKey={`${i}`} key={i}>
+                      <Accordion.Header>{job.name}</Accordion.Header>
+                      <Accordion.Body>
+                        {job.applications.map(
+                          (
+                            application: {
+                              name: string,
+                              experience: string,
+                              education: string,
+                              application: string,
+                            },
+                            i: number
+                          ) => (
+                            <div className="application" key={i}>
+                              <h3>{application.name}</h3>
+                              <h4>Experience</h4>
+                              {application.experience
+                                .split("\n")
+                                .map((t: string, i: number) => {
+                                  return <p key={i}>{t}</p>;
+                                })}
 
-                            <h4>Education</h4>
-                            {application.education
-                              .split("\n")
-                              .map((t: string, i: number) => {
-                                return <p key={i}>{t}</p>;
-                              })}
-                            <h4>Application</h4>
-                            {application.application
-                              .split("\n")
-                              .map((t: string, i: number) => {
-                                return <p key={i}>{t}</p>;
-                              })}
-                            <hr />
-                          </div>
-                        )
-                      )}
-                    </Accordion.Body>
-                  </Accordion.Item>
-                ))
+                              <h4>Education</h4>
+                              {application.education
+                                .split("\n")
+                                .map((t: string, i: number) => {
+                                  return <p key={i}>{t}</p>;
+                                })}
+                              <h4>Application</h4>
+                              {application.application
+                                .split("\n")
+                                .map((t: string, i: number) => {
+                                  return <p key={i}>{t}</p>;
+                                })}
+                              <hr />
+                            </div>
+                          )
+                        )}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  )
+                )
               : "Loading"}
           </Accordion>
         </div>
