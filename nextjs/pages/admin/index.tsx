@@ -113,7 +113,7 @@ export async function getServerSideProps(): Promise<Record<string, unknown>> {
             ).json()),
             applications: await (
               await fetch(
-                `${config.baseUrl}/api/positions/${id}/applications?admin_key=AdminKey`
+                `${config.baseUrl}/api/positions/${id}/applications?admin_key=${process.env.ADMIN_KEY}`
               )
             ).json(),
           };
