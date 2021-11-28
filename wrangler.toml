@@ -1,12 +1,18 @@
 name = "cloudjob"
 type = "javascript"
 zone_id = ""
-account_id = ""
+account_id = "a8cb3c06a49d0625de6a97e704aed77a"
 route = ""
 workers_dev = true
 compatibility_date = "2021-11-27"
+
+kv_namespaces = [ 
+    { binding = "CLOUDJOB_DEV", id = "bbc10b1b20e74c5fb266e3df6090bb93", preview_id = "bbc10b1b20e74c5fb266e3df6090bb93" },
+    { binding = "CLOUDJOB_COMPANIES", id = "625806bcc8c84c7792321dd6ed393e4d", preview_id = "625806bcc8c84c7792321dd6ed393e4d" }
+]
 
 [build]
 command = "npm install && npm run build"
 [build.upload]
 format = "service-worker"
+
